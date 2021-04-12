@@ -11,6 +11,17 @@ const config = {
   database: 'nodedb'
 };
 
+const createDB = () => {
+  const createDataBaseQuery = `CREATE DATABASE IF NOT EXISTS nodedb`;
+  const createTableQuery = `CREATE TABLE IF NOT EXISTS people (id INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(id), name VARCHAR(32) )`;
+
+  const connection = mysql.createConnection(config);
+  connection.query(createDataBaseQuery);
+  connection.query(createTableQuery);
+
+  connection.end();
+};
+
 const generateName = () =>
   new Promise((resolve, reject) => {
     const randomName = uniqueNamesGenerator({ dictionaries: [names, starWars] });
@@ -34,6 +45,8 @@ const generateName = () =>
 
     connection.end();
   });
+
+createDB();
 
 app.get('/', async (req, res) => {
   const namesList = await generateName();
